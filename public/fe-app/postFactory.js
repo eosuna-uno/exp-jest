@@ -11,6 +11,3 @@ export function newPost(obj) {
   }
   return null;
 }
-module.exports = {
-  newPost,
-};

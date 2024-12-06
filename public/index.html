@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script  src="/public/fe-app/fetcher.js"></script>
+    <!--<script type="module" src="/public/fe-app/fetcher.js"></script>-->
     <title>My first app</title>
 </head>
 <body>
@@ -11,6 +11,7 @@
         <div>id: <span id="template-post-id"></span></div>
         <div>title: <span id="template-post-title"></span></div>
         <div>Data <span id="template-post-data"></span></div>
+        <div>tags: <span id="template-post-tags"></span></div>
     </template>
     <h3>My first app</h3>
     <div id="blogs">
@@ -21,8 +22,8 @@
     </div>
 </body>
 </html>
-<script>
-
+<script type="module">
+    import {fetcher} from '/public/fe-app/fetcher.js'
     /*
         try {
             const response = await fetch("/blogs") // mas dificil probar esta funcion pues se tiene que probar el fetch 
@@ -42,14 +43,22 @@
             let jsonResponse = await response.json()
             const template = document.querySelector("#template-post");
             for(const post of jsonResponse) {
-            const clone = template.content.cloneNode(true);
-            let td = clone.querySelectorAll("#template-post-id");
-            let title = clone.querySelectorAll("#template-post-title");
-            let data = clone.querySelectorAll("#template-post-data");
-            document.getElementById("blogs").appendChild(clone)
+                const clone = template.content.cloneNode(true);
+                let id = clone.getElementById("template-post-id");
+                let title = clone.getElementById("template-post-title");
+                let data = clone.getElementById("template-post-data");
+                id.innerHTML  = post.id;
+                title.innerHTML  = post.title;
+                data.innerHTML  = post.body;
+                
+                if (Array.isArray(post.tags)) {
+                    let data = clone.getElementById("template-post-tags");
+                    data.innerHTML =  post.tags.join(", ")                    
+                }
+                document.getElementById("blogs").appendChild(clone)
             }
         } catch (e) {
-            
+            console.log(e)
         }
         
     });

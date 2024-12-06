@@ -1,4 +1,6 @@
-const ft = require("./../public/fe-app/fetcher");
+import * as ft from "./../public/fe-app/fetcher.js";
+import { jest, describe } from "@jest/globals";
+
 describe("fetcher test:", () => {
   afterEach(() => {
     // restore the spy created with spyOn

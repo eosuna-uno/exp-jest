@@ -1,5 +1,6 @@
-const postFactory = require("../public/fe-app/postFactory");
-
+//const postFactory = require("../public/fe-app/postFactory");
+import * as postFactory from "./../public/fe-app/postFactory";
+import { jest, describe } from "@jest/globals";
 describe("postParser test:", () => {
   test("parse post without tags", () => {
     let expected = { id: 1, title: "title", data: "some post data" };
