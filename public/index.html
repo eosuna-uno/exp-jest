@@ -7,6 +7,11 @@
     <title>My first app</title>
 </head>
 <body>
+    <template id="template-post">
+        <div>id: <span id="template-post-id"></span></div>
+        <div>title: <span id="template-post-title"></span></div>
+        <div>Data <span id="template-post-data"></span></div>
+    </template>
     <h3>My first app</h3>
     <div id="blogs">
         top blogs
@@ -35,7 +40,14 @@
         try {
             const response = await fetcher("/blogs")
             let jsonResponse = await response.json()
-            console.log(jsonResponse)
+            const template = document.querySelector("#template-post");
+            for(const post of jsonResponse) {
+            const clone = template.content.cloneNode(true);
+            let td = clone.querySelectorAll("#template-post-id");
+            let title = clone.querySelectorAll("#template-post-title");
+            let data = clone.querySelectorAll("#template-post-data");
+            document.getElementById("blogs").appendChild(clone)
+            }
         } catch (e) {
             
         }

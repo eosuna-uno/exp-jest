@@ -1,4 +1,4 @@
-function postParser(obj) {
+export function newPost(obj) {
   if (obj.id && obj.title && obj.data) {
     return {
       id: obj.id,
@@ -9,8 +9,8 @@ function postParser(obj) {
       // in this case we want to not get send wrong tags like undefined, numbers, or other values
     };
   }
+  return null;
 }
-
 module.exports = {
-  postParser,
+  newPost,
 };

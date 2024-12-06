@@ -29,7 +29,6 @@ describe("fetcher test:", () => {
     try {
       const result = await ft.fetcher("/blogs");
     } catch (e) {
-      console.log("whats this", e);
       error = e;
     }
     expect(error.name).toBe("Error");

@@ -1,4 +1,4 @@
-async function fetcher(url, options = {}) {
+export async function fetcher(url, options = {}) {
   try {
     const response = await globalThis.fetch(url, options);
     if (response.status >= 400) {
@@ -9,6 +9,3 @@ async function fetcher(url, options = {}) {
     throw e;
   }
 }
-module.exports = {
-  fetcher,
-};
