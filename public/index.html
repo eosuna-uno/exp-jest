@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="/public/fe-app/fetcher.js"></script>
+    <title>My first app</title>
+</head>
+<body>
+    <h3>My first app</h3>
+    <div id="blogs">
+        top blogs
+    </div>
+    <div>
+        tags
+    </div>
+</body>
+</html>
+<script>
+
+    /*
+        try {
+            const response = await fetch("/blogs") // mas dificil probar esta funcion pues se tiene que probar el fetch 
+            console.log(response)
+            if (response.status >= 400) {<-----
+                throw Error("Error:" + response.status, {cause: response})
+            }
+            let jsonResponse = await response.json()
+            //y se tiene que probar la logica aqui tambien 
+        } catch (e) {
+            
+        } */
+    window.addEventListener('load', async (event) => {
+        //page fully loaded
+        try {
+            const response = await fetcher("/blogs")
+            let jsonResponse = await response.json()
+            console.log(jsonResponse)
+        } catch (e) {
+            
+        }
+        
+    });
+</script>
