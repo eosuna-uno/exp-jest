@@ -49,6 +49,25 @@ In this example we have the function `toBe` as part of the returned object from 
 
 Mock or Spies, let you spy on how a function is being used, and mock the output, For example, you can spy on a global function that is reading from files, or doing network request, as we don't want such behaviour, we mock it and return and show a values to test.
 
+In the case of Jest, we can mock globals but first we need to add them to Jest globals in the `jest.config.js`:
+
+```javascript
+  globals: {
+    fetch: global.fetch,
+  },
+```
+
+Then we can mock the fetch in global like
+
+```javascript
+const fetchSpy = jest.spyOn(globalThis, "fetch").mockReturnValue(
+  Promise.resolve({
+    status: 200,
+    json: async () => returnObject,
+  })
+);
+```
+
 ### Coverage
 
 Coverage is expected to be as high as possible, but not always 100%, not because is would not be valueble, but because a 100% coverage can be deceptive, let's see a coverage example
