@@ -48,3 +48,40 @@ In this example we have the function `toBe` as part of the returned object from 
 ### Mocks Or Spies
 
 Mock or Spies, let you spy on how a function is being used, and mock the output, For example, you can spy on a global function that is reading from files, or doing network request, as we don't want such behaviour, we mock it and return and show a values to test.
+
+### Coverage
+
+Coverage is expected to be as high as possible, but not always 100%, not because is would not be valueble, but because a 100% coverage can be deceptive, let's see a coverage example
+
+![Screenshot of a terminal jest test passing](./assets/coverage_1.png)
+
+As you can see we have some parts to go trough, first 2 lines are the files that we are testing, and the status, in this case both happen to pass, and we get our dopamine shot.
+
+The next table, has 6 columns, File, Percentage of Statements, Percentage of Branches, Functions, Lines being tested, and Uncovered Lines, and here we see a problem, i forgot to cover line #7.
+
+```javascript
+tags: Array.isArray(obj.tags) ? obj.tags : [],
+```
+
+in this case i forgot to cover sending undefined, null, numbers, strings to my function in the tags attribute. we can fix that easily with:
+
+```javascript
+let expected = { ... }
+const postUndefined = postFactory.newPost(
+    { ...expected, tags: undefined }
+);
+expect(Array.isArray(post.tags)).toBe(true);
+```
+
+This piece of code will try to generate a post with undefined tags, and in parsing it, we will instead generate an empty array. Cause our external API returns an undefined/null for tags when post is not tag with them, and our app should not break, when this happens, we parse and move on. afterwards, we test again and...
+
+![Coverage 2 with all test passing and all lines covered](coverage_2.png)
+
+It seems we have all of our code tested, but thats not completely true, all lines are tested but in postFactory we have this if statement
+
+```javascript
+if (obj.id && obj.title && obj.data) {
+```
+
+with this code, if we only test for `obj.id`, `obj.title` or `obj.data` we will have 100% coverage rate, but when one of these cases happens in the worst case scenario it may break our app, or simply not update the post, or shown title, etc.
+we need to be careful not to trust coverage faithfully, but to use it to guide us, on how much works still needs to be done.

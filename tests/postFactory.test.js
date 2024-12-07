@@ -28,7 +28,7 @@ describe("postParser test:", () => {
     expect(postNoId).toBe(null);
     expect(postNoTitle).toBe(null);
   });
-  test.skip("parse post with some tags", () => {
+  test("parse post with some tags", () => {
     let expected = {
       id: 1,
       title: "title",
@@ -38,7 +38,7 @@ describe("postParser test:", () => {
     const post = postFactory.newPost(expected);
     expect(post.tags[0]).toBe("example tags");
   });
-  test.skip("parse post with undefined or null tag", () => {
+  test("parse post with undefined or null tag", () => {
     let expected = {
       id: 1,
       title: "title",
