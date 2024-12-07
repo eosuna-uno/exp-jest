@@ -83,5 +83,5 @@ It seems we have all of our code tested, but thats not completely true, all line
 if (obj.id && obj.title && obj.data) {
 ```
 
-with this code, if we only test for `obj.id`, `obj.title` or `obj.data` we will have 100% coverage rate, but when one of these cases happens in the worst case scenario it may break our app, or simply not update the post, or shown title, etc.
+with this code, if we only test for one of `obj.id`, `obj.title` or `obj.data` we will have 100% coverage rate, but when one of these cases happens in the worst case scenario it may break our app, or simply not update the post, or shown title, etc.
 we need to be careful not to trust coverage faithfully, but to use it to guide us, on how much works still needs to be done.
