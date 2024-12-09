@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    
+    "start": "src/index.js",
     "test2": "jest",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
@@ -25,7 +25,8 @@
   "homepage": "https://github.com/eosuna-uno/exp-jest#readme",
   "description": "",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "mongoose": "^8.8.4"
   },
   "devDependencies": {
     "jest": "^29.7.0",
