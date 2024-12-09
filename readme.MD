@@ -5,7 +5,7 @@ Unit test are the most simple test that we can create, to ensure, a piece of cod
 Rules when testing:
 
 - Do not do network, read files, or any other operation that has external dependancies, this can lead to enormous times waiting for disk, network, and inconsistencies.
-- When unit testing, always go for the smaller functions in length and dependencies, this are easier to test, and unit test is the fastest test to execute
+- When unit testing, always go first for the smaller functions in length and dependencies, this are easier to test, and unit test is the fastest test to execute
 
 First example, division can have multiple edge cases, like dividing by 0, Infinity or using undefined/null values. in the example below, only big int division by 0 throws.
 
@@ -34,7 +34,7 @@ describe("Test divide fn:", () => {
 
 Such simple code, have a lot of edge cases and testing possibilities. Normally you will have to test all edge cases. Is better to test early, but if you did not see the edge case, in the first Iteration, add it as soon as you know about it.
 
-### Expect
+### The Expect function
 
 In the example before, we use some specific Jest functions (that are normally called the same in other testing libraries and even languages). the interesting one right now is **Expect**, it receives a value and returns an object with a ton of functions to verify what the value is or what happened for example
 
@@ -43,7 +43,8 @@ expect(5 + 1).toBe(6); // pass
 expect(true && false).toBe(false); //pass
 ```
 
-In this example we have the function `toBe` as part of the returned object from expect you can check all properties/functions on: https://jestjs.io/docs/expect you can read it. but is better to have it handy and learn by doing
+In this example we have the function `toBe` as part of the returned object from expect you can check all properties/functions on: https://jestjs.io/docs/expect you can read it.
+but is better to have it handy and learn by doing, there will be examples in the tests under `tests` folder in the root of this project
 
 ### Mocks Or Spies
 
@@ -104,3 +105,45 @@ if (obj.id && obj.title && obj.data) {
 
 with this code, if we only test for one of `obj.id`, `obj.title` or `obj.data` we will have 100% coverage rate, but when one of these cases happens in the worst case scenario it may break our app, or simply not update the post, or shown title, etc.
 we need to be careful not to trust coverage faithfully, but to use it to guide us, on how much works still needs to be done.
+
+### Tests placement
+
+There is no big directive in javascript where you test should go, but normally is done in two way, they have their own test folder (like in this project), or they have a test file on the side of the file they are testing. Note: There are other ways in other languages like, adding the test in the same file the way Rust [does it](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html), I think this would be a preferable way, as you can access private functions for testing without exporting just for testing, or trying some weird magic, but it is not available for us in JS land.
+
+#### Option 1:
+
+<pre>
+- src
++-- item.ts
+/-- util
+    +-- helper.ts
+
+- test
++-- item.test.ts
+/-- util
+    -- helper.test.ts
+</pre>
+
+#### Option 2:
+
+<pre>
+/ src
++-- item.ts
++-- item.test.ts
+/-- util
+    +-- helper.ts
+    `-- helper.test.ts
+</pre>
+
+Some projects prefer Option 2, some others prefer Option 1, and the reason for this project being Option 1 is simple, i'm not doing any processing to the files, and i need to test my front end files being served, i don't want tests to be served by the server so i dont add the to the `public` folder, i could still add them there, but it would make the next code, more complex, and error prone.
+
+```javascript
+app.use("/public", express.static("public"));
+```
+
+This is a good technical reason why, we would want to have the test in a separate folder, it can be fix but still you would need to be careful, The following reasons, are aesthetic reasons; one camp just like to have all their tests in a tidy place where it doesnt bother source code, and the other camp likes to have the unit test file along side their source, and both are fine, both ways are ok, and if you bundle your files, there's no technical reason to go with one or another.
+
+if the project is starting, you can have a chat with your peers and decide how you are going to handle it. if the project already exists, my suggestion would be to continue with the same way as to no create unnecesary friction, that time can be use better creating new tests and checking edge cases.
+
+[!NOTE]
+This sections apply not only to Unit Test, but to other kinds of tests too.
