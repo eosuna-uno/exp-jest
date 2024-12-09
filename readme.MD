@@ -44,7 +44,38 @@ expect(true && false).toBe(false); //pass
 ```
 
 In this example we have the function `toBe` as part of the returned object from expect you can check all properties/functions on: https://jestjs.io/docs/expect you can read it.
-but is better to have it handy and learn by doing, there will be examples in the tests under `tests` folder in the root of this project
+but is better to have it handy and learn by doing, there will be examples in the tests under `tests` folder in the root of this project.
+
+Another case that comes regularly is expecting from Promises you can do this several ways one is
+
+```javascript
+return fetch("...")
+  .then((data) => {
+    expect(data).toBe(someData);
+  })
+  .catch((err) => {
+    expect(err).toBe(someError);
+  });
+```
+
+In this way you need to return a Promise.
+
+we can also use the expressiveness of async/await
+
+```javascript
+test("fetch test", async () => {
+  const data = await fetch("...");
+  expect(data).toBe(someData);
+});
+// or
+test("fetch test", async () => {
+  try {
+    const data = await fetch("...");
+  } catch (err) {
+    expect(err).toBe(someError);
+  }
+});
+```
 
 ### Mocks Or Spies
 
@@ -105,6 +136,8 @@ if (obj.id && obj.title && obj.data) {
 
 with this code, if we only test for one of `obj.id`, `obj.title` or `obj.data` we will have 100% coverage rate, but when one of these cases happens in the worst case scenario it may break our app, or simply not update the post, or shown title, etc.
 we need to be careful not to trust coverage faithfully, but to use it to guide us, on how much works still needs to be done.
+
+There are other tools to check coverage, that we're not going to check in this document, but is good for you to know them. One of them is; Sonarqube, it generates a web page with code smells, duplicates, and other metrics, saved in a db so you can check them at any time, and see with your peers and review.
 
 ### Tests placement
 
