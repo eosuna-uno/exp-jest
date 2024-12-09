@@ -145,5 +145,4 @@ This is a good technical reason why, we would want to have the test in a separat
 
 if the project is starting, you can have a chat with your peers and decide how you are going to handle it. if the project already exists, my suggestion would be to continue with the same way as to no create unnecesary friction, that time can be use better creating new tests and checking edge cases.
 
-[!NOTE]
-This sections apply not only to Unit Test, but to other kinds of tests too.
+[!NOTE] This sections apply not only to Unit Test, but to other kinds of tests too.
