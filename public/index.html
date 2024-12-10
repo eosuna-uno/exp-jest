@@ -5,26 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--<script type="module" src="/public/fe-app/fetcher.js"></script>-->
     <title>My first app</title>
+    <style>
+      #blogs {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .post {
+        border: 1px solid black;
+        max-width: 400px;
+        padding: 10px;
+        background-color: beige;
+        min-width: 208px;
+      }
+      .post ul {
+        display: flex;
+        list-style: none;
+        gap: 5px;
+      }
+    </style>
 </head>
 <body>
     <template id="template-post">
-        <div>id: <span id="template-post-id"></span></div>
-        <div>title: <span id="template-post-title"></span></div>
-        <div>Data <span id="template-post-data"></span></div>
-        <div>tags: <span id="template-post-tags"></span></div>
+        <div class="post">
+            <div>id: <span id="template-post-id"></span></div>
+            <div>title: <span id="template-post-title"></span></div>
+            <div><span id="template-post-data"></span></div>
+            <div>
+              <ul id="template-post-tags"></ul>
+            </div>
+            <div>
+              <a href="#" id="template-post-edit"></a>
+              <a href="#" id="template-post-delete"></a>
+            </div>
+            
+        </div>
     </template>
     <h3>My first app</h3>
     <div id="blogs">
-        top blogs
     </div>
     <div>
         tags
     </div>
 
     <form action="/post" method="post">
-        <input type="text" name="title" placeholder="title" aria-placeholder="title" />
-        <input type="text" name="body" placeholder="body" aria-placeholder="body" />
-        <input type="text" name="tags" placeholder="tags" aria-placeholder="tags" />
+      <input type="text" name="title" placeholder="title" aria-placeholder="title" />
+      <input type="text" name="body" placeholder="body" aria-placeholder="body" />
+      <input type="text" name="tags" placeholder="tags" aria-placeholder="tags" />
       <button type="submit">Create post</button>
     </form>
 </body>
@@ -54,13 +81,31 @@
                 let id = clone.getElementById("template-post-id");
                 let title = clone.getElementById("template-post-title");
                 let data = clone.getElementById("template-post-data");
-                id.innerHTML  = post.id;
+                let link = clone.getElementById("template-post-edit");
+                let del = clone.getElementById("template-post-delete");
+                id.removeAttribute("id");
+                title.removeAttribute("id");
+                data.removeAttribute("id");
+                link.removeAttribute("id");
+                del.removeAttribute("id");
+                id.innerHTML  = post._id;
                 title.innerHTML  = post.title;
                 data.innerHTML  = post.body;
-                
+                link.href = "/post/" + post._id + "/edit";
+                link.innerText = "Edit Post";
+                del.href= "/post/" + post._id + "/delete";
+                del.addEventListener("click", () => {
+                  console.log("Deleting", post._id)
+                })
+                del.innerText = "Delete Post"
                 if (Array.isArray(post.tags)) {
                     let data = clone.getElementById("template-post-tags");
-                    data.innerHTML =  post.tags.join(", ")                    
+                    const lis = post.tags.map((tag) => {
+                      const li = document.createElement("li")
+                      li.innerText = tag
+                      return li
+                    });
+                    data.append(...lis)
                 }
                 document.getElementById("blogs").appendChild(clone)
             }

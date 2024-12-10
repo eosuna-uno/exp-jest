@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
-import { connection } from "./connection.js";
-import { randomUUID } from "node:crypto";
+import {} from "./connection.js";
 const { Schema } = mongoose;
 
 const PostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
-  id: { type: Schema.Types.UUID, required: true },
   tags: [String],
+  createdAt: Date,
 });
 
 export const PostModel = mongoose.model("post", PostSchema);
@@ -24,7 +23,23 @@ export async function createPost(title, body, tags) {
     title,
     body,
     tags,
-    id: randomUUID(),
+    createdAt: new Date(),
   });
   return await post.save();
+}
+
+export async function updatePost(id, PartialPost) {
+  return PostModel.updateOne({ _id: id }, PartialPost).exec();
+}
+
+export async function getPost(id) {
+  return await PostModel.find({ _id: id }).exec();
+}
+
+export async function getLatestPost() {
+  return await PostModel.find().sort("-createdAt").exec();
+}
+
+export async function deletePost(id) {
+  PostModel.deleteOne({ _id: id }).exec();
 }
