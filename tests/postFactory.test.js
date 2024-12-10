@@ -1,4 +1,3 @@
-//const postFactory = require("../public/fe-app/postFactory");
 import * as postFactory from "./../public/fe-app/postFactory";
 import { jest, describe } from "@jest/globals";
 describe("postParser test:", () => {

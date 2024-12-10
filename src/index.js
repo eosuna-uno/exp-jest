@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { connect } from "./db/connection.js";
 import ejs from "ejs";
 import {
   createPost,
@@ -8,6 +9,8 @@ import {
   getPost,
   updatePost,
 } from "./db/posts.js";
+await connect();
+
 const app = express();
 const port = 3000;
 app.set("view engine", "ejs");

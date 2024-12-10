@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import {} from "./connection.js";
 const { Schema } = mongoose;
-
 const PostSchema = new mongoose.Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
@@ -29,6 +27,7 @@ export async function createPost(title, body, tags) {
 }
 
 export async function updatePost(id, PartialPost) {
+  console.log("eyy", PostModel.updateOne.toString());
   return PostModel.updateOne({ _id: id }, PartialPost).exec();
 }
 

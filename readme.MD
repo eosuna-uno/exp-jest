@@ -100,6 +100,56 @@ const fetchSpy = jest.spyOn(globalThis, "fetch").mockReturnValue(
 );
 ```
 
+In our next challange, we go to the backend code, and when trying to mock our `createPost` function
+
+```javascript
+export async function createPost(title, body, tags) {
+  const post = new PostModel({
+    title,
+    body,
+    tags,
+    createdAt: new Date(),
+  });
+  return await post.save();
+}
+```
+
+In this case we're working with `mongoose` and PostModel object creation, is simple and can be done without mocking, but the `post.save();` line, will try to contact the database, which we don't want as test would become flaky, because it could fail for a number of reasons. we need to mock, but in this case we need to mock PostModel which is a ES6 class, and not a regular function (like fetch).
+
+The code for that would be:
+
+```javascript
+const mockSave = jest
+  .spyOn(PostModel.prototype, "save")
+  .mockImplementation(() => {});
+const post = await createPost(title, body, tags);
+expect(mockSave).toHaveBeenCalled();
+```
+
+This will mock the save function (the one we're using right now). Afterwards we call the function to be tested, and check our internal `.save()` was actually called, if we need to return something, or our save is used in the function that was called, we can change the `.mockImplementation` call to return whatever we need:
+
+```javascript
+const mockSave = jest
+  .spyOn(PostModel.prototype, "save")
+  .mockImplementation((title, body, tags) => {
+    return "this is a value";
+  });
+const post = await createPost(title, body, tags);
+console.log(post); // this is a value
+expect(mockSave).toHaveBeenCalled();
+```
+
+This can help us test the function further. in the case of static functions like `find`, `updateOne`, and others, the prototype must be remove from the spyOn, like
+
+```javascript
+.spyOn(PostModel, "updateOne")
+```
+
+#### before and After
+
+In Jest and other test runners, we have a set of functions that can be run before and after, this are: beforeEach, beforeAll, afterEach, afterAll.
+This 4 functions can help us setup mocks or variables that will work for all of our tests in the current file
+
 ### Coverage
 
 Coverage is expected to be as high as possible, but not always 100%, not because is would not be valueble, but because a 100% coverage can be deceptive, let's see a coverage example
