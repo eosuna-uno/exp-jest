@@ -8,16 +8,37 @@ import {
   updatePost,
 } from "./../src/db/posts";
 import { jest, describe, test, expect } from "@jest/globals";
+/**
+ *
+ * @param {Object} post
+ * @param {string} post.title
+ * @param {string} post.body
+ * @param {string[]} post.tags
+ * @param {Date|undefined} post.createdAt
+ * @throws {Error}
+ * @returns
+ */
+function postFactory(PostPartial) {
+  return {
+    title: "default title",
+    body: "body",
+    tags: [],
+    createdAt: new Date(),
+    ...PostPartial,
+  };
+}
 
 describe("Test posts:", () => {
   test("create post", async () => {
     const mockSave = jest
       .spyOn(PostModel.prototype, "save")
       .mockImplementation(() => {});
-    const title = "Title of post";
-    const body = "Body";
-    const tags = ["some", "tags"];
-    const post = await createPost({ title, body, tags });
+    const postCreated = postFactory({
+      title: "Title of post",
+      body: "Body",
+      tags: ["some", "tags"],
+    });
+    const post = await createPost(postCreated);
     expect(mockSave).toHaveBeenCalled();
     mockSave.mockRestore();
   });

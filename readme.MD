@@ -305,8 +305,25 @@ as we can see the function gets more and more complicated the more we want to en
 The second approach we can use that do not use validation is to delete the undefined entries we could use the `delete` keyword which is slow or map to a new object filtering undefined/null attributes
 
 ```javascript
-
+function postFactory(partialPost) {
+  let clearPartialPost = {};
+  for (const [key, value] of Object.entries(partialPost)) {
+    if (partialPost[key] !== undefined && partialPost[key] !== null) {
+      console.log(key, value);
+      clearPartialPost[key] = value;
+    }
+  }
+  return {
+    title: "default title",
+    body: "body",
+    tags: [],
+    createdAt: new Date(),
+    ...clearPartialPost,
+  };
+}
 ```
+
+With this approach it will clear all undefined/null so they don't get set in the final object, but you may still need to validate some or all other attributes, use any of these 2 approaches, or both at the same time.
 
 #### before and After
 
