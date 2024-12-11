@@ -260,6 +260,54 @@ now everything is ready for our **factory**.
 
 ### Factories
 
+Factories, are simple function or classes, that create specific objects with defaults, so the test are easier, for our simple `PostModel` we can create a factory as such.
+
+```javascript
+function PostFactory(postPartial) {
+  return {
+    title: "default title",
+    body: "body",
+    tags: [],
+    createdAt: new Date(),
+    ...postPartial,
+  };
+}
+```
+
+This implementation, is really simple to reason about and can be good enough for your project, but have some caveats/issues that you may run into, for example, by mistake you could send undefined/null on any of the elements and it will create an incorrect object with some of the attributes being undefined. for most cases this factory would be enough, but we can improve it, there are 2 major ways we can do this:
+
+First. we can validate each attribute before constructing the object, and then return it like
+
+```javascript
+function postFactory(postPartial) {
+  if (
+    typeof postPartial.title != "string" ||
+    typeof postPartial.body != "string"
+  ) {
+    return null; // we can also throw error, or return an error object in here it depends, on your application and your needs
+  }
+  // Here the object have title, and body securely, we also need to set the tags and createdAt
+  //if we dont set a correct array for tags we just set it to empty, we could in change return null too.
+  const tags = Array.isArray(postPartial.tags) ? postPartial.tags : [];
+  const createdAt =
+    postPartial instanceof Date ? postPartial.createdAt : new Date();
+  return {
+    title: postPartial.title,
+    body: postPartial.body,
+    tags: tags,
+    createdAt: createdAt,
+  };
+}
+```
+
+as we can see the function gets more and more complicated the more we want to ensure all the attributes are there and are correctly set. this is normal, and we would want to have it preferably in one place, in as much as possible a pure function, in this case postFactory is not a pure function as it calls `new Date()`, if we would want to solve this, we could make it a neccesity to send the timestamp or string for the Date object to be created. but the point remains, with this approach, is easy to use, but when the object is big and the validations plenty, the function is going to get pretty big.
+
+The second approach we can use that do not use validation is to delete the undefined entries we could use the `delete` keyword which is slow or map to a new object filtering undefined/null attributes
+
+```javascript
+
+```
+
 #### before and After
 
 In Jest and other test runners, we have a set of functions that can be run before and after, this are: beforeEach, beforeAll, afterEach, afterAll.
