@@ -10,24 +10,26 @@ const PostSchema = new mongoose.Schema({
 export const PostModel = mongoose.model("post", PostSchema);
 
 /**
- * Creates a post with a partial, and returns a new post from mongo
- * @param {string} title Title of the post
- * @param {string} body Information in the post
- * @param {string[]} tags Tags related to the post
- * @throws Error
+ *
+ * @param {Object} post
+ * @param {string} post.title
+ * @param {string} post.body
+ * @param {string[]} post.tags
+ * @param {Date|undefined} post.createdAt
+ * @throws {Error}
+ * @returns
  */
-export async function createPost(title, body, tags) {
+export async function createPost({ title, body, tags, createdAt }) {
   const post = new PostModel({
     title,
     body,
     tags,
-    createdAt: new Date(),
+    createdAt: createdAt instanceof Date ? createdAt : new Date(),
   });
   return await post.save();
 }
 
 export async function updatePost(id, PartialPost) {
-  console.log("eyy", PostModel.updateOne.toString());
   return PostModel.updateOne({ _id: id }, PartialPost).exec();
 }
 

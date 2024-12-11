@@ -27,11 +27,11 @@ app.post("/post", async (req, res) => {
     });
     return res.redirect("/");
   }
-  const post = await createPost(
-    req.body.title,
-    req.body.body,
-    req.body.tags.split(",")
-  );
+  const post = await createPost({
+    title: req.body.title,
+    body: req.body.body,
+    body: req.body.tags.split(","),
+  });
   return res.redirect("/");
 });
 app.get("/blogs", async (req, res) => {

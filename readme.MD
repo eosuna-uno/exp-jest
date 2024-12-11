@@ -145,6 +145,121 @@ This can help us test the function further. in the case of static functions like
 .spyOn(PostModel, "updateOne")
 ```
 
+We're going to go through every example for the `PostModel` usages, `createPost`, `updatePost`, `getPost`, `getLatestPost`, `deletePost`.
+`createPost` was already seen in our previous example, and in this case is the only one creating a new object from `PostModel` which when spying, we add the prototype, is not the case for the others as we will see.
+
+for `UpdatePost` we call `updateOne`, with the first parameter being the filter, and the second a partial object to update.
+
+First we do:
+
+```javascript
+test("updatePost", async () => {
+  const PartialPost = { title: "new title" };
+  const id = "6758817da91ce116ad942188";
+  const mockUpdate = jest
+    .spyOn(PostModel, "updateOne")
+    .mockImplementation((find, partial) => {
+      return {
+        exec: () => {},
+      };
+    });
+  await updatePost(id, PartialPost);
+  expect(mockUpdate).toHaveBeenCalledWith({ _id: id }, PartialPost);
+  mockUpdate.mockRestore();
+});
+```
+
+Here on SpyOn we dont use the prototype as the function being mocked is a static, we return the exec function so the tested code can work correctly, but do not make any call to the mongo server, and after updatePost, we check that the mockUpdate has been called with specifics, getPost works exactly the same but without the partial. Our next different example is `getLatestPost`, let's see the code:
+
+```javascript
+test("getLatestPost", async () => {
+  expect.assertions(2);
+  const mockFind = jest.spyOn(PostModel, "find").mockImplementation((find) => {
+    return {
+      sort: (sortOrder) => {
+        expect(sortOrder).toBe("-createdAt");
+        return {
+          exec: () => {},
+        };
+      },
+    };
+  });
+  await getLatestPost();
+  expect(mockFind).toHaveBeenCalledWith();
+  mockFind.mockRestore();
+});
+```
+
+This code adds a couple of interesting things first: `expect.assertions(2);` this line, will expect a specific number of assertions will be executed in this test, in this case 2, one at the bottom of the script, and another one in the callback, our second change, we can use our callback to test specifics functions being call in specific ways, this way of testing can look easy to reason about, but it creates some issues, one the them being the expect's are now in different places, which makes harder to see what we're testing, we can improve this code, first, the sort function will be updated, instead of being an array function, we will create a new variable with a `jest.fn` mock that will return the exec. then we change the mockImplementation to use this. with this we can remove `expect.assertions(2)` as our expect are not going to be in a callback or promise anymore.
+
+```javascript
+test("getLatestPost", async () => {
+  let mockSort = jest.fn(() => {
+    return {
+      exec: () => {},
+    };
+  });
+  const mockFind = jest.spyOn(PostModel, "find").mockImplementation((find) => {
+    return {
+      sort: mockSort,
+    };
+  });
+  await getLatestPost();
+  expect(mockSort).toHaveBeenCalledWith("-createdAt");
+  expect(mockFind).toHaveBeenCalled();
+  mockFind.mockRestore();
+  mockSort.mockRestore();
+});
+```
+
+This may look like a little bit more code, but is easier to reason about, as all expect can easily be find and reviewed. If for some reason you get a lot of mocks you can add them to an array and mockRestore them all in a function with a for as shown below, we can simply call `restoreMocks(mocks)`, and they will be restore
+
+```javascript
+function restoreMocks(mocks) {
+  for (const mock of mocks) {
+    mock.mockRestore();
+  }
+}
+```
+
+our final function to be tested is `deletedPost`, but we're not going to review it, as it doesn't have any interesting features, you reader, can still go to the `/tests` directory and review any test you like. but something interesting happened twice in the `post.test.js` file, you may have missed it, as this example is super simple.
+
+```javascript
+//first test
+const title = "Title of post";
+const body = "Body";
+const tags = ["some", "tags"];
+//another test
+const PartialPost = { title: "new title" };
+```
+
+in this case, we're duplicating some code, and you may duplicate some code, and that can be fine, but for testing we're going to normally create a lot of this objects, so it's better to have a little abstraction on top, to make this object creation easier, first we need to refactor `createPost`, this receives the object as different parameters, we will change it to be an object. below we can see before and after:
+
+```javascript
+export async function createPost(title, body, tags) {
+  const post = new PostModel({
+    title,
+    body,
+    tags,
+    createdAt: new Date(),
+  });
+  return await post.save();
+}
+export async function createPost({ title, body, tags, createdAt }) {
+  const post = new PostModel({
+    title,
+    body,
+    tags,
+    createdAt: createdAt instanceof Date ? createdAt : new Date(),
+  });
+  return await post.save();
+}
+```
+
+now everything is ready for our **factory**.
+
+### Factories
+
 #### before and After
 
 In Jest and other test runners, we have a set of functions that can be run before and after, this are: beforeEach, beforeAll, afterEach, afterAll.
