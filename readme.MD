@@ -404,7 +404,7 @@ Some projects prefer Option 2, some others prefer Option 1, and the reason for t
 app.use("/public", express.static("public"));
 ```
 
-This is a good technical reason why, we would want to have the test in a separate folder, it can be fix but still you would need to be careful, The following reasons, are aesthetic reasons; one camp just like to have all their tests in a tidy place where it doesnt bother source code, and the other camp likes to have the unit test file along side their source, and both are fine, both ways are ok, and if you bundle your files, there's no technical reason to go with one or another.
+This is a good technical reason why, we would want to have the test in a separate folder, it can be fix but still you would need to be careful, Other reasons why you may decide for test placement, are aesthetic reasons; one camp just like to have all their tests in a tidy place where it doesn't bother source code, and the other camp likes to have the unit test file along side their source, and both are fine, both ways are ok, and if you bundle your files, there's no technical reason to go with one or another.
 
 if the project is starting, you can have a chat with your peers and decide how you are going to handle it. if the project already exists, my suggestion would be to continue with the same way as to no create unnecesary friction, that time can be use better creating new tests and checking edge cases.
 
