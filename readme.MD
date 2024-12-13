@@ -325,6 +325,78 @@ function postFactory(partialPost) {
 
 With this approach, it will clear all undefined/null so they don't get set in the final object, but you may still need to validate some or all other attributes, use any of these 2 approaches, or both at the same time.
 
+#### Factories, Mocks and Fors
+
+Another tactic to test several kinds of cases is to use the `test.each` function, let's see the example from jest
+
+```javascript
+test.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])(".add(%i, %i)", async (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
+```
+
+In this example, we see, how we want to test several cases, we can leverage this by, sending some input, and our expected output, and then we test with a function, which can be very beneficial for example if we want to test our factory function works great, we send the factory with a lot of combinations and their expected output, we test them in only one place, that makes the tests more compact as we don't need 10-20 or more test functions, but let's remember to be super clear with this function, as in our coverage, and test output, we want to know exactly on what test failed, so we can exclude it, and test it on its own.
+
+Let's change our factory function. Now, we need to do two new things: When the post is longer than `n` characters, we're going to mark it as `long`, and if not, it's going to be `short`. We're going to generate extra tags if the post contains certain words, for example, `javascript` or `jest`. We're going to add a `tech` tag to the tags.
+
+our postFactory function will now look like this:
+
+```javascript
+function postFactory(PostPartial) {
+  const newTags = [];
+  if (!Array.isArray(PostPartial.tags)) PostPartial.tags = [];
+  if (PostPartial.body && typeof PostPartial.body === "string") {
+    if (
+      PostPartial.body.includes("javascript") ||
+      PostPartial.body.includes("jest")
+    ) {
+      newTags.push("tech");
+    }
+  }
+
+  return {
+    title: "default title",
+    body: "body",
+    tags: newTags,
+    createdAt: new Date(),
+    length: PostPartial?.body?.length > 20 ? "long" : "short",
+    ...PostPartial,
+    tags: [...PostPartial.tags, ...newTags],
+  };
+}
+```
+
+Now this factory is also a parser, if we remove the defaults and put other safeguards like throwing with wrong input, we can add it to our system and use it, but right now we're just gonna test, and we need to test this thoroughly.
+
+```javascript
+test.each([
+  [
+    postFactory({}),
+    { title: "defaul title", body: "body", length: "short", tags: [] },
+  ],
+  [
+    postFactory({ body: "this is the javascript post" }),
+    {
+      title: "defaul title",
+      body: "this is the javascript post",
+      length: "long",
+      tags: ["tech"],
+    },
+  ],
+])("PostFactory foreach test %#", async (post, expected) => {
+  expect(post.body).toBe(expected.body);
+  expect(post.length).toBe(expected.length);
+  expect(post.tags[0]).toBe(expected.tags[0]);
+});
+```
+
+We can see that we're testing 3 elements in the object, we could test all of them, we could even execute the postFactory inside the test, that would make our input array to be simpler. these these are not thorough, but, you get the point, we could add 10, 20 or 30 cases, all tested with the same function, that in this case we can now which test failed if any, by the `%#` part of the test name, this will printout the index of the array tested.
+If the test we're doing are too much. probably because the array comes from a file and it's thousands of tests long, we can add the **experimental** `concurrent` attribute to test, ej: `test.concurrent.each` this will try to run the test as concurrently as possible, so, try to make the tests as pure as possible, and check other caveats at: https://jestjs.io/docs/api#testconcurrentname-fn-timeout
+
 #### before and after
 
 In Jest and other test runners, we have a set of functions that can be run before and after, these are: beforeEach, beforeAll, afterEach, afterAll.

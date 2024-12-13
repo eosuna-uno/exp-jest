@@ -19,12 +19,24 @@ import { jest, describe, test, expect } from "@jest/globals";
  * @returns
  */
 function postFactory(PostPartial) {
+  const newTags = [];
+  if (PostPartial.body && typeof PostPartial.body === "string") {
+    if (
+      PostPartial.body.includes("javascript") ||
+      PostPartial.body.includes("jest")
+    ) {
+      newTags.push("tech");
+    }
+  }
+
   return {
     title: "default title",
     body: "body",
-    tags: [],
+    tags: newTags,
     createdAt: new Date(),
+    length: PostPartial?.body?.length > 20 ? "long" : "short",
     ...PostPartial,
+    tags: [...PostPartial.tags, ...newTags],
   };
 }
 
