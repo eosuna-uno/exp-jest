@@ -482,3 +482,29 @@ If the project is starting, you can have a chat with your peers and decide how y
 
 > [!NOTE]
 > This section apply not only to Unit Test, but to other kinds of tests too.
+
+### Other concerns
+
+When we are working in the real world, I can give you some advice for your day-to-day:
+
+#### Time for testing
+
+how much time, should I dedicate to testing, not just unit testing, but e2e and integration, my rule of thumb is, to dedicate to test at minimum the same time you dedicated to the feature itself, if it took 2 days to develop a feature, take 2 days to create the tests.
+
+#### When to write test
+
+If you run into a good idea for testing a particular function; my advice is, to write it at that moment, it would probably not undermine your flow, and you will probably handle some edge cases early. Especially for pure functions, as these are the easier functions to unit test.
+
+#### Pure functions
+
+Try to write your functions to be "pure" as many as you can. Why? I have already said it multiple times, but it is important. **Pure functions are easier to test**—not a little bit easier, but a lot easier, so when you can make them pure easily, it's an easy win.
+
+##### What is a pure function?
+
+If by this point I have not explained, or you don't know what a pure function is. A pure function is one that:
+
+1. the output is determined by the input, and nothing else. it does not check anything outside its scope to determine the output
+2. does not have a side effect. Like, calling the DB, network, filesystem, current time, changes a value/object outside its scope.
+3. immutability, pure functions do not change the input data, but instead create new data structures for its return.
+
+These rules make pure functions great for caching. So as much as you can, try to make your functions pure.
