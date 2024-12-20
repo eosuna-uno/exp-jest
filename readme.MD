@@ -204,7 +204,9 @@ test("getLatestPost", async () => {
       sort: mockSort,
     };
   });
+
   await getLatestPost();
+
   expect(mockSort).toHaveBeenCalledWith("-createdAt");
   expect(mockFind).toHaveBeenCalled();
   mockFind.mockRestore();
