@@ -1,7 +1,7 @@
+import { jest, describe, expect, test } from "@jest/globals";
 import * as ft from "./../public/fe-app/fetcher.js";
-import { jest, describe } from "@jest/globals";
 
-describe("fetcher test:", () => {
+describe("fetcher.js: ", () => {
   afterEach(() => {
     // restore the spy created with spyOn
     jest.restoreAllMocks();
@@ -17,6 +17,7 @@ describe("fetcher test:", () => {
     const result = await ft.fetcher("/blogs");
     let obj = await result.json();
     expect(spy).toHaveBeenCalledWith("/blogs", {});
+    expect(result.status).toBe(200);
     expect(obj[0].id).toBe(returnObject[0].id);
   });
   test("that fetch returns an error when status is >= 400", async () => {
